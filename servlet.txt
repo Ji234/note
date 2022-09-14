@@ -1,0 +1,6 @@
+http 相应代码:
+	200 ok
+	302 found 重定向
+	403 forbidden
+	404 not found 
+	500 error 
