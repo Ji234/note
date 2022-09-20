@@ -413,6 +413,7 @@ myslqdump -uroot -hlocalhost -p'password' -p3306 --all-databases --triggers --ro
 
 ```bash
 sed -i '23a SET sql_log_bin=0;' +日志文件名称 
+# 23a 表示23 行
 ```
 
 * 重启初始化数据库,启动数据库,修改密码
@@ -431,3 +432,17 @@ mysql -uroot -hlocalhost -p'passwoed' < 存放数据库备份文件的位置
 
 ### 增量备份与恢复
 
+增量备份直接用之前的二进制日志文件，还要之前全量备份的position
+
+1.先把全量备份恢复了
+2.再恢复增量备份的数据
+
+```sql
+mysqlbinlog  --start-position=154 /var/log/mysql/bin-log.000005 /var/log/mysql/bin-log.000006 | mysql -uroot -p'password'
+```
+
+### MySQL 主从复制
+
+1. 常见的应用场景
+
+* 读写分离，提高
