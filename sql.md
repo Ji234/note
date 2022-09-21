@@ -5,7 +5,7 @@
 | 名称 | 含义   |
 |---|---|
 | DDL|数据定义语言（Data Definition Language）DDL用来创建数据库中的各种对象，创建、删除、修改表的结构 比如表、视图、索引、同义词、聚簇等。其主要功能是定义数据库对象，核心指令为create、drop、alter |
-| DML |数据操作语言（Data Manipulation Language） 对数据库表中的数据进行增删改,DML的核心指令为insert、update、delete|
+| DML |数据操作语言（Data Manipulation Language） 对数据库表中的数据进行增删改,DML的核心指令为insert、update、delete  (删除一条或按条件匹配)|
 | DQL| 数据查询语言（Data Query Language）用来查询数据库表中的记录,DQL的核心指令为select。通常与关键字from、where、group by、having、order by等一起使用，组成查询语句|
 | DCL| 数据库控制语言（Database Control Language）用来授予或回收访问数据库的某种特权，并控制数据库操纵事务发生的时间及效果，对数据库实行监视等|
 | TCL |事务控制语言（Transaction Control Language）简称TCL。用于管理数据库中的事务。这些用于管理由 DML 语句所做的更改。它还允许将语句分组为逻辑事务 TCL经常被用于快速原型开发、脚本编程、GUI和测试等方面。TCL的核心指令为commit、rollback。|
@@ -39,6 +39,8 @@ where
 
 当值为null的时候只能使用，is 或者 not is 而不能用 =，！= ,(相当于=)
 等等  
+
+出自唐代黄巢的《不第后赋菊》
 待到秋来九月八，我花开时彼花杀。
 冲天香阵透长安，满城尽带黄金甲。  
 
@@ -225,7 +227,7 @@ show index from tname;
 | --- | --- |
 | 数据库名称.\* | 数据库中所有的表 |
 | 数据库名称.表名称| 指定数据库中的表 |
-| 数据库名称.存储过程名 指定数据库中的存储过程 |
+| 数据库名称.存储过程名|指定数据库中的存储过程 |
 | \*.\* | 全部的数据库中的全部表 |
 
 * 用户和ip格式
@@ -446,3 +448,101 @@ mysqlbinlog  --start-position=154 /var/log/mysql/bin-log.000005 /var/log/mysql/b
 1. 常见的应用场景
 
 * 读写分离，提高
+* 实时灾备，一个数据库坏了即使切换到另外一个数据库
+* 数据汇总，将多个数据库的数据存放到一个数据库，方便数据统计
+  
+2. mysql主从复制原理介绍
+
+* 异步和半同步介绍（mysql默认的是异步复制）
+异步时主节点执行和提交事务,然后将它们异步的发送给从节点,已重新执行和或者应用.(从数据库数据会延迟)
+半同步时先把操作先发送给从数据库,再把commmit动作执行之后在在主数据库提交(降低主数据库的io能力)
+
+3. mysql主从复制过程
+
+* 开启binlog,通过把数据库的binlog从主库传到从库,重新应用解析
+* 复制主库需要三个线程(dump,io,sql) 完成
+* 复制是异步的过程,主从复制的异步复制的本质是逻辑复制
+
+----
+MySQL主从复制前提
+
+1. 主服务器一定要打开二进制日志
+2. 必须要两台服务器
+3. 从服务器需要一次数据初始化
+4. 如果主从都是新搭建的不用初始化
+5. 如果主数据库是运行很久的,可以使用备份将主数据库的数据复制到从数据库
+6. 主数据库必须要有对从库复制请求的用户
+7. 从库要有relay-log设置,存放从主库传过来的二进制日志 show variable like ''%relay-log%
+8. 在第一次的时候,从库要change master to 去连接主数据库,提供了连接用户的user,password,port,ip
+9. change master信息要放到master.info 中 show variables like '%master_info%'
+10. 从库怎能知道,主库发生了新的变化,通过relay-log.info 记录已经应用过的relay-log信息
+11. 在复制过程中涉及到的线程
+  io线程负责连接主库,请求binlog ,接收binlog 并且写入relay-log
+  sql线程负责执行relay-log中的事件
+  dump负责相应io线程的请求
+
+4. 编辑配置文件
+
+主配置文件
+
+```bash
+datadir=/var/lib/mysql
+socket=/run/mysqld/mysqld.sock
+
+default-storage-engine=INNODB #默认引擎
+symbolic-links=0
+server_id=6 # 服务id，两个服务id不能一样
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+log_error=/var/log/mysql.log # 错误日志
+log_bin=/var/log/mysql/mysql-bin # 开启二进制日志,注意要创建文件夹以及要修改权限
+```
+
+从库配置文件
+
+```bash
+datadir=/var/lib/mysql
+socket=/run/mysqld/mysqld.sock
+
+default-storage-engine=INNODB #默认引擎
+symbolic-links=0
+server_id=5 # 服务id，两个服务id不能一样
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+log_error=/var/log/mysql.log # 错误日志
+log_bin=/var/log/mysql/mysql-bin # 开启二进制日志 ,注意要创建文件夹以及要修改权限
+```
+
+从库准备操作
+
+```sql
+MariaDB [(none)]> create user slave@'%' identified by '13333';
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [(none)]> grant replication slave on *.* to 'slave'@'%';
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [(none)]> show grants for slave@'%';
++-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for slave@%
+                                                                 |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT REPLICATION SLAVE, REPLICATION MASTER ADMIN, SLAVE MONITOR ON *.* TO `slave`@`%` IDENTIFIED BY PASSWORD '*6FD75C493B2445E4A0E072014C52A0CAEEC44696' |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.000 sec)
+
+
+# 用另外一个数据库登录
+
+mysql -h 39.99.50.197 -u slave  -p'13333'
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
++--------------------+
+1 row in set (0.06 sec)
+
+从数据库里操作
+change master to master_host='39.99.50.197',master_port=3306,master_user='slave',master_password='12222',master_log_file='mysql-bin.000004',master_log_pos=1711;
+start slave;
+show slave status\G # 查看三个进程是否正常运行 这个会一直运行的重启了不要怕
+```
