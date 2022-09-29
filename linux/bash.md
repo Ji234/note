@@ -743,3 +743,159 @@ echo $str4
     ${FOO:+val} val如果$FOO设置
     ${FOO:?message} 如果$FOO未设置，则显示消息并退出
     ```
+
+### Bash 函数
+
+函数可以有效减少您重复编写程序段的工作量，可随时重复调用
+
+1. 
+
+```sh
+function_name() {
+commands
+}
+```
+
+2. 
+
+```sh
+function function_name() {
+commands
+}
+```
+
+3. 两种格式的单行压缩，请仔细对照。
+
+```sh
+function_name() {commands;}
+function function_name() {commands;}
+```
+
+例子
+
+```sh
+#!/bin/bash
+W3Cschool(){
+ echo "Welcome to W3Cschool"
+}
+W3Cschool
+```
+
+* 变量作用域
+在 Bash 中，在默认情况下所有变量都定义为全局变量，即使在函数内部声明也是如此
+您可以使用local关键字在函数内部声明局部变量，该变量只能够在该函数内部使用。同其他编程语言一样，这意味着您可以声明相同名称的全局变量。
+
+```sh
+#!/bin/bash
+str1="abc"
+str2="bcd"
+fun(){
+    local str1="123"
+    str2="234"
+    echo "Inside function:str1_value is ${str1},str2_value is ${str2}."
+}
+echo "Before executing function:str1_value is ${str1},str2_value is ${str2}."
+fun
+echo "After executing function:str1_value is ${str1},str2_value is ${str2}."
+```
+
+* 返回值
+在 Bash 函数中，其返回值是执行的最后一个语句的状态。1-255（十进制）范围内表示失败，除此之外表示成功
+
+1. 您可以使用return语句指定返回状态，并将其分配给$?。该语句会终止函数的调用。如下所示
+
+```sh
+#!/bin/bash
+
+
+fun(){
+    echo "result"
+    return 66
+}
+
+
+fun
+echo $?
+```
+
+* 参数传递
+
+若您想要将任意数量的参数传递给 Bash 函数，只需要将它们放在调用的函数名后面，以空格分隔，以" "将参数转义。
+
+```sh
+#!/bin/bash
+fun(){
+    echo "Welcome to $1"
+}
+fun "W3Cschool"
+```
+
+### Bash 数组
+
+1. 索引数组
+使用declare加-a选项，将变量来声明数组，语法如下
+
+```sh
+#声明数组
+declare -a Array_Name
+#创建数组元素
+Array_Name[index_1]=value_1
+Array_Name[index_2]=value_2
+#或
+Array_Name=(
+    [index_1]=value_1
+    [index_2]=value_2
+)
+```
+
+2. 关联数组
+
+使用declare加-A选项来声明数组，语法如下
+
+```sh
+#声明数组
+declare -A Array_Name
+#创建数组元素
+Array_Name[index_1]=value_1
+Array_Name[index_2]=value_2
+#或
+Array_Name=(
+    [index_1]=value_1
+    [index_2]=value_2
+)
+```
+
+3. 数组初始化
+
+```sh
+ Array_Name=(element_1 element_2 element_3)
+```
+
+4. 打印数组
+
+```sh
+declare -p Array_Name
+```
+
+* 数组运算
+
+1. 访问元素
+
+```sh
+  ${Array_Name[index]}
+```
+
+```sh
+#!/bin/bash
+declare -a arr=("welcome" "to" "W3Cschool")
+echo "@"
+for i in "${arr[@]}"
+do
+echo "$i"
+done
+echo "*"
+for i in "${arr[*]}"
+do
+echo "$i"
+done
+```
