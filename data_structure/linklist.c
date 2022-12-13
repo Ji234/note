@@ -1,3 +1,4 @@
+//实现了链表的插入和查看两种方法
 #include <stdio.h>
 #include <stdlib.h>
 #define ALENGTH 5
