@@ -1,0 +1,8 @@
+.PHONY : clean all #伪声明
+cc = gcc #变量存储
+CFLAGS = -Wall -g #编译选项，CFLAGS是make内置的变量
+BIN = linklist.o 1a.o 1b.o 1c.o #这里填写自己的目标文件，且目标文件必须是去除尾缀后的名称
+linklist: $(BIN)
+	$(cc) $^ -o $@  #还有三个必须记忆的自动变量
+clean:
+	    rm -rf *.o
