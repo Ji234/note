@@ -32,6 +32,8 @@ int main() {
         temp = &((*temp)->next);
         show_list(node);
     }
+    reverse(&node);
+    show_list(node);
 }
 
 int show_list(struct Node* node) {
@@ -52,4 +54,19 @@ void insert(int num, struct Node** node) {
     *node = malloc(sizeof(struct Node));
     (*node)->v = num;
     (*node)->next = NULL;
+}
+void reverse(struct Node** node){
+    struct Node* temp,*prev,*result;
+    temp = NULL;
+    prev = *node;
+    while(*node !=NULL){ 
+        prev = (*node)->next;
+        (*node)->next = temp;
+        temp = *node;
+        result = *node;
+        *node = prev;
+        //printf("a  ");
+    }
+    *node = result;
+
 }
