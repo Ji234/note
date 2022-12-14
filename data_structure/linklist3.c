@@ -1,4 +1,4 @@
-//实现了链表的插入和查看两种方法
+//实现了链表反转
 #include <stdio.h>
 #include <stdlib.h>
 #define ALENGTH 5
@@ -8,6 +8,7 @@ struct Node {
 };
 
 
+void reverse(struct Node** node);
 int show_list(struct Node* node);
 void insert(int num, struct Node** node);
 int main() {
@@ -44,7 +45,6 @@ int show_list(struct Node* node) {
     printf("\n");
     return length;
 }
-
 
 
 //插入
