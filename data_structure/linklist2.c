@@ -8,6 +8,7 @@ struct Node {
 };
 
 
+void delete(int num, struct Node** node);
 int show_list(struct Node* node);
 void insert(int num, struct Node** node);
 int main() {
@@ -31,6 +32,8 @@ int main() {
         temp = &((*temp)->next);
         show_list(node);
     }
+    delete(4,&node);
+    show_list(node);
 }
 
 int show_list(struct Node* node) {
@@ -46,6 +49,29 @@ int show_list(struct Node* node) {
 }
 
 
+void delete(int index, struct Node** node){
+    int i;
+    struct Node* temp, *temp1;
+    //0 is special case:forward not have Node
+    if(index ==0 ){
+        temp=(*node);
+       *node = (*node)->next;
+       free(temp);
+       return;
+    }
+    //backup node head 
+    temp1=*node;
+    for(i=1 ; i<index && ((*node)->next)->next!=NULL ; i++){
+        *node= (*node)->next;
+    }
+    //it will be free
+    temp = (*node)->next;
+    
+    (*node)->next= ((*node)->next)->next;
+    free(temp);
+    *node = temp1;
+
+}
 
 //插入
 void insert(int num, struct Node** node) {
