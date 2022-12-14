@@ -1,20 +1,20 @@
 src=$(wildcard *.c ./sub/*.c)
-obj=$(patsubst %.c,%.o,$(src))
-targets=$(patsubst %.c,%,$(src))
+obj=$(patsubst %.c,bin/%.o,$(src))
+targets=$(patsubst %.c,bin/%,$(src))
 CFLAGS= -Wall  -O3
 CC=gcc
 
 all:$(targets)
 
+$(obj):bin/%.o:%.c
+	  $(CC) $(CFLAGS) -c $< -o $@
+
 $(targets):%:%.o
 	$(CC) $^ -o $@
-	cp $@ bin/
 
-.PHONY: clean cleano 
+.PHONY: clean
 
 clean:
 	rm -rf bin/*
-	rm -rf $(obj)
-	rm -rf $(targets)
 
 #编译目标:匹配规则
