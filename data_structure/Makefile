@@ -14,3 +14,6 @@ $(targets):%:%.o
 
 clean:
 	rm -rf bin/*
+	rm -rf $(targets)
+	rm -rf $(obj)
+
