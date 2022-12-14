@@ -16,5 +16,3 @@ $(targets):%:%.o
 
 clean:
 	rm -rf bin/*
-
-#编译目标:匹配规则
