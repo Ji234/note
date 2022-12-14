@@ -1,4 +1,4 @@
-//实现了链表的插入和查看两种方法
+//实现了链表任意位置插入
 #include <stdio.h>
 #include <stdlib.h>
 #define ALENGTH 5
@@ -7,7 +7,7 @@ struct Node {
     struct Node* next;
 };
 
-
+void insert_index(int num,int index, struct Node** node);
 int show_list(struct Node* node);
 void insert(int num, struct Node** node);
 int main() {
@@ -31,6 +31,10 @@ int main() {
         temp = &((*temp)->next);
         show_list(node);
     }
+    insert_index(29,0,&node);
+    show_list(node);
+    insert_index(40,7,&node);
+    show_list(node);
 }
 
 int show_list(struct Node* node) {
@@ -52,4 +56,26 @@ void insert(int num, struct Node** node) {
     *node = malloc(sizeof(struct Node));
     (*node)->v = num;
     (*node)->next = NULL;
+}
+//num ,index (index>=0), node 指针的指针
+void insert_index(int num,int index, struct Node** node) {
+    struct Node* temp1;
+    int i;i=0;
+    struct Node* temp;
+    temp = malloc(sizeof(struct Node));
+    temp->v =num;
+    temp->next=NULL;
+    if(index==0) {
+         temp->next =*node;
+         *node=temp;
+         return;
+    }
+
+    temp1 =*node;
+    for(i=1;i<index&&(*node)-> next!=NULL;i++){
+        *node=(*node)->next;   
+    }
+        temp->next =(*node)->next; 
+        (*node)->next=temp;
+        *node=temp1;
 }
