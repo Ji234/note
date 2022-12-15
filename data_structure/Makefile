@@ -1,7 +1,7 @@
 src=$(wildcard *.c ./sub/*.c)
 obj=$(patsubst %.c,bin/%.o,$(src))
 targets=$(patsubst %.c,bin/%,$(src))
-CFLAGS= -Wall  -O3
+CFLAGS= -Wall -g
 CC=gcc
 
 all:$(targets)
