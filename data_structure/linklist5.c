@@ -1,4 +1,4 @@
-//实现了链表反转
+//反转一个链表用递归实现 
 #include <stdio.h>
 #include <stdlib.h>
 #define ALENGTH 5
@@ -7,8 +7,7 @@ struct Node {
     struct Node* next;
 };
 
-
-void reverse(struct Node** node);
+struct Node *reverse(struct Node **node);
 int show_list(struct Node* node);
 void insert(int num, struct Node** node);
 int main() {
@@ -32,8 +31,21 @@ int main() {
         temp = &((*temp)->next);
         show_list(node);
     }
-    reverse(&node);
+    node = reverse(&node);
     show_list(node);
+}
+
+struct Node* reverse(struct Node **node){
+    struct Node *head,*temp1;
+    head = NULL;
+    if((*node)->next == NULL){
+        head = *node;
+        return head;
+    }
+    head=reverse(&((*node)->next));
+    (*node)->next->next = *node;
+    (*node)->next = NULL;
+    return head;
 }
 
 int show_list(struct Node* node) {
@@ -49,24 +61,10 @@ int show_list(struct Node* node) {
 }
 
 
+
 //插入
 void insert(int num, struct Node** node) {
     *node = malloc(sizeof(struct Node));
     (*node)->v = num;
     (*node)->next = NULL;
-}
-void reverse(struct Node** node){
-    struct Node* temp,*prev,*result;
-    temp = NULL;
-    prev = *node;
-    while(*node !=NULL){ 
-        prev = (*node)->next;
-        (*node)->next = temp;
-        temp = *node;
-        result = *node;
-        *node = prev;
-        //printf("a  ");
-    }
-    *node = result;
-
 }
