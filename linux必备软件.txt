@@ -1,1 +1,1 @@
-bash-completion vim  wget curl
+vim  wget curl git ssh
