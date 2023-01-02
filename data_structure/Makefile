@@ -4,7 +4,7 @@ obj=$(patsubst %.c,bin/%.o,$(src))
 obj1=$(patsubst %.cpp,bin/%.o,$(src1))
 targets=$(patsubst %.c,bin/%,$(src))
 targets1=$(patsubst %.cpp,bin/%,$(src1))
-CFLAGS= -Wall -g
+CFLAGS= -Wall
 CC=gcc
 CPP=g++
 
