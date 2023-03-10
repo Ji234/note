@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+    <div id="app">
+      <h2  v-text="massage" @click="isShowf"></h2>
+      <h2 v-show="isShow" v-text="massage"></h2>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data:{
+            isShow: false,
+            massage:"信息"
+        },
+        methods:{
+          isShowf:function(){
+            if (this.isShow==true) {
+              this.isShow=false;
+            }else
+            this.isShow=true;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
