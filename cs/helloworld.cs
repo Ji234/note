@@ -1,22 +1,26 @@
-// C# program to print Hello World!
 using System;
-  
-// namespace declaration
-namespace HelloWorldApp {
-      
-    // Class declaration
-    class Geeks {
-          
-        // Main Method
-        static void Main(string[] args) {
-              
-            // statement
-            // printing Hello World!
-            Console.WriteLine("Hello World!");
-              
-            // To prevents the screen from 
-            // running and closing quickly
-            //Console.ReadKey();
+
+namespace c.biancheng.net
+{
+    class Demo
+    {
+        static void Main(string[] args) 
+        {
+            // Student stu = new Student();
+            Student.id = 101;
+            Student.name = "张三";
+            Student.Display();
+            Console.Read();
+        }
+    }
+    public class Student
+    {
+        private Student() { }
+        public static int id;
+        public static string name;
+        public static void Display()
+        {
+            Console.WriteLine("姓名："+name+" 编号："+id);
         }
     }
 }

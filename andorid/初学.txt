@@ -1,0 +1,15 @@
+Intent
+	传递数据,从哪里来, 到哪里去
+	
+	intent 的组成部分:
+	component 组件, 定义来源与目标
+	action	  动作
+	data      数据
+	category  类别
+	type	  数据类型, 指定消息的数据类型
+	flags 	  标志位, 指定活动的标志位
+	
+
+显式intent, 隐式intent
+	显示是知道你从哪里来, 要到那里去
+	隐式不知道你到那里去, 通过action匹配, 如果有很多个的话就弹出一个框来让你选择
