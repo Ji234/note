@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+</head>
+<body>
+
+    <!-- 通过循环将数据放入可重复的标签 -->
+    <div id="app">
+        <input type="text" @keyup.enter="getValue('hhh')" >
+    </div>
+    
+    <script>
+        var vue =new Vue({
+            el:"#app",
+            data:{
+                arr:["北京","上海","广州","深圳"]
+            },
+            methods:{
+                syaHello:function(){
+
+                },
+                getValue:function(a1){
+                    alert(a1);
+                }
+            }
+
+
+        })
+    </script>
+</body>
+</html>
